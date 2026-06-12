@@ -1,7 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Post } from "@/lib/types";
 import PostForm from "@/components/PostForm";
+import { isAuthed } from "@/lib/auth";
 import { updatePost } from "../../actions";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +13,8 @@ export default async function EditPostPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  if (!(await isAuthed())) redirect(`/login?next=/posts/${id}/edit`);
 
   const supabase = await createClient();
   const { data, error } = await supabase

@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { Post } from "@/lib/types";
 import DeleteButton from "@/components/DeleteButton";
 import Markdown from "@/components/Markdown";
+import { isAuthed } from "@/lib/auth";
 import { deletePost } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -87,6 +88,7 @@ export default async function PostPage({
   }
 
   const post = data as Post;
+  const authed = await isAuthed();
 
   return (
     <article>
@@ -125,17 +127,19 @@ export default async function PostPage({
         <Markdown>{post.content}</Markdown>
       </div>
 
-      <div className="mt-10 flex items-center gap-2 border-t border-gray-200 pt-6">
-        <Link
-          href={`/posts/${post.id}/edit`}
-          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        >
-          수정
-        </Link>
-        <form action={deletePost.bind(null, post.id)}>
-          <DeleteButton />
-        </form>
-      </div>
+      {authed && (
+        <div className="mt-10 flex items-center gap-2 border-t border-gray-200 pt-6">
+          <Link
+            href={`/posts/${post.id}/edit`}
+            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+          >
+            수정
+          </Link>
+          <form action={deletePost.bind(null, post.id)}>
+            <DeleteButton />
+          </form>
+        </div>
+      )}
     </article>
   );
 }

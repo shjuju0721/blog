@@ -3,9 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isAuthed } from "@/lib/auth";
 
 // 글 작성
 export async function createPost(formData: FormData) {
+  if (!(await isAuthed())) redirect("/login?next=/posts/new");
+
   const title = String(formData.get("title") ?? "").trim();
   const content = String(formData.get("content") ?? "");
   const category = String(formData.get("category") ?? "").trim() || null;
@@ -32,6 +35,8 @@ export async function createPost(formData: FormData) {
 
 // 글 수정
 export async function updatePost(id: string, formData: FormData) {
+  if (!(await isAuthed())) redirect(`/login?next=/posts/${id}/edit`);
+
   const title = String(formData.get("title") ?? "").trim();
   const content = String(formData.get("content") ?? "");
   const category = String(formData.get("category") ?? "").trim() || null;
@@ -58,6 +63,8 @@ export async function updatePost(id: string, formData: FormData) {
 
 // 글 삭제
 export async function deletePost(id: string) {
+  if (!(await isAuthed())) redirect(`/login?next=/posts/${id}`);
+
   const supabase = await createClient();
   const { error } = await supabase.from("posts").delete().eq("id", id);
 

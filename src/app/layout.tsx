@@ -4,6 +4,8 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import { createClient } from "@/lib/supabase/server";
 import { UNCATEGORIZED } from "@/lib/categories";
+import { isAuthed } from "@/lib/auth";
+import { logout } from "@/app/auth/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +80,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { counts, total } = await getCategoryCounts();
+  const authed = await isAuthed();
 
   return (
     <html lang="ko">
@@ -87,13 +90,32 @@ export default async function RootLayout({
             <Link href="/" className="text-xl font-bold">
               신현주 월드
             </Link>
-            <nav>
-              <Link
-                href="/posts/new"
-                className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
-              >
-                글쓰기
-              </Link>
+            <nav className="flex items-center gap-2">
+              {authed ? (
+                <>
+                  <Link
+                    href="/posts/new"
+                    className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+                  >
+                    글쓰기
+                  </Link>
+                  <form action={logout}>
+                    <button
+                      type="submit"
+                      className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                    >
+                      로그아웃
+                    </button>
+                  </form>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                >
+                  관리자 로그인
+                </Link>
+              )}
             </nav>
           </div>
         </header>

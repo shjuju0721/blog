@@ -1,0 +1,10 @@
+패스코드 기반 접근 제어 추가 (읽기 공개 / 쓰기·수정·삭제 보호)
+
+- 읽기(목록·상세)는 누구나 가능, 글쓰기·수정·삭제는 패스코드 입력 후에만
+- 패스코드는 서버 전용 env BLOG_PASSCODE(미설정 시 112233)로 관리 → 클라이언트 비노출
+- /login 페이지 + login/logout 서버 액션, 인증 시 httpOnly 쿠키(blog_auth) 발급
+- 보호: createPost/updatePost/deletePost 액션과 new/edit 페이지에서 미인증 시 /login 리다이렉트
+- UI: 헤더는 인증 시 글쓰기·로그아웃, 비인증 시 관리자 로그인 / 상세의 수정·삭제 버튼은 인증 시에만 노출
+- .env(.example)에 BLOG_PASSCODE 추가
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
