@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 import ImageUpload from "@/components/ImageUpload";
+import MarkdownEditor from "@/components/MarkdownEditor";
 
 type Props = {
   action: (formData: FormData) => void | Promise<void>;
@@ -60,17 +61,8 @@ export default function PostForm({
       <ImageUpload defaultUrl={defaultValues?.cover_image} />
 
       <div>
-        <label htmlFor="content" className="mb-1 block text-sm font-medium">
-          내용
-        </label>
-        <textarea
-          id="content"
-          name="content"
-          rows={14}
-          defaultValue={defaultValues?.content ?? ""}
-          placeholder="내용을 입력하세요"
-          className="w-full resize-y rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-gray-900"
-        />
+        <label className="mb-1 block text-sm font-medium">내용</label>
+        <MarkdownEditor name="content" defaultValue={defaultValues?.content ?? ""} />
       </div>
 
       <div className="flex items-center gap-2">
