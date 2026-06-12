@@ -35,6 +35,7 @@ export default async function EditPostPage({
           title: post.title,
           content: post.content,
           category: post.category,
+          cover_image: post.cover_image,
         }}
         submitLabel="수정"
         cancelHref={`/posts/${post.id}`}

@@ -31,23 +31,33 @@ export default function PostList({ posts }: { posts: Post[] }) {
           key={post.id}
           className="rounded-lg border border-gray-200 bg-white p-5 transition hover:shadow-sm"
         >
-          <Link href={`/posts/${post.id}`} className="block">
-            <div className="flex items-center gap-2">
-              {post.category && (
-                <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
-                  {post.category}
-                </span>
-              )}
-              <time className="text-xs text-gray-400">
-                {formatDate(post.created_at)}
-              </time>
+          <Link href={`/posts/${post.id}`} className="flex gap-4">
+            {post.cover_image && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={post.cover_image}
+                alt={post.title}
+                className="h-24 w-24 shrink-0 rounded-md border border-gray-200 object-cover sm:h-28 sm:w-40"
+              />
+            )}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                {post.category && (
+                  <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+                    {post.category}
+                  </span>
+                )}
+                <time className="text-xs text-gray-400">
+                  {formatDate(post.created_at)}
+                </time>
+              </div>
+              <h2 className="mt-2 text-lg font-semibold text-gray-900">
+                {post.title}
+              </h2>
+              <p className="mt-1 line-clamp-2 text-sm text-gray-600">
+                {post.content}
+              </p>
             </div>
-            <h2 className="mt-2 text-lg font-semibold text-gray-900">
-              {post.title}
-            </h2>
-            <p className="mt-1 line-clamp-2 text-sm text-gray-600">
-              {post.content}
-            </p>
           </Link>
         </li>
       ))}

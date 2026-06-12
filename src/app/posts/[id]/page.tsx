@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -7,6 +8,55 @@ import Markdown from "@/components/Markdown";
 import { deletePost } from "../actions";
 
 export const dynamic = "force-dynamic";
+
+// 본문에서 마크다운 기호를 걷어내 검색/공유용 요약을 만듭니다.
+function toSummary(content: string) {
+  return (
+    content
+      .replace(/[#>*`_~\-\[\]()!]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 120) || "신현주 월드의 글"
+  );
+}
+
+// 글별 메타태그 — 제목/요약/대표 이미지가 검색·SNS 카드에 반영됩니다.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("posts")
+    .select("title, content, cover_image")
+    .eq("id", id)
+    .single();
+
+  if (!data) return { title: "글을 찾을 수 없습니다" };
+
+  const post = data as Pick<Post, "title" | "content" | "cover_image">;
+  const description = toSummary(post.content);
+  const images = post.cover_image ? [post.cover_image] : undefined;
+
+  return {
+    title: post.title,
+    description,
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description,
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description,
+      images,
+    },
+  };
+}
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("ko-KR", {
@@ -61,6 +111,15 @@ export default async function PostPage({
           <> · 수정 {formatDate(post.updated_at)}</>
         )}
       </div>
+
+      {post.cover_image && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={post.cover_image}
+          alt={post.title}
+          className="mt-6 max-h-[28rem] w-full rounded-lg border border-gray-200 object-cover"
+        />
+      )}
 
       <div className="mt-6">
         <Markdown>{post.content}</Markdown>

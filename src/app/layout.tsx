@@ -7,9 +7,50 @@ import { UNCATEGORIZED } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
 
+const SITE_NAME = "신현주 월드";
+const SITE_DESCRIPTION =
+  "신현주가 기록하는 생각과 일상, 테크·경제·과학 이야기를 담은 개인 블로그 — 신현주 월드";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "내 블로그",
-  description: "Next.js + Supabase 로 만든 개인 블로그",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    "신현주",
+    "신현주 월드",
+    "신현주월드",
+    "블로그",
+    "개인 블로그",
+    "테크",
+    "기록",
+  ],
+  authors: [{ name: "신현주" }],
+  creator: "신현주",
+  publisher: "신현주",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
 };
 
 // 카테고리별 글 개수 집계 (사이드바용)
@@ -44,7 +85,7 @@ export default async function RootLayout({
         <header className="border-b border-gray-200 bg-white">
           <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
             <Link href="/" className="text-xl font-bold">
-              내 블로그
+              신현주 월드
             </Link>
             <nav>
               <Link

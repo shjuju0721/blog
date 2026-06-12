@@ -1,9 +1,15 @@
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
+import ImageUpload from "@/components/ImageUpload";
 
 type Props = {
   action: (formData: FormData) => void | Promise<void>;
-  defaultValues?: { title?: string; content?: string; category?: string | null };
+  defaultValues?: {
+    title?: string;
+    content?: string;
+    category?: string | null;
+    cover_image?: string | null;
+  };
   submitLabel: string;
   cancelHref: string;
 };
@@ -50,6 +56,8 @@ export default function PostForm({
           ))}
         </select>
       </div>
+
+      <ImageUpload defaultUrl={defaultValues?.cover_image} />
 
       <div>
         <label htmlFor="content" className="mb-1 block text-sm font-medium">

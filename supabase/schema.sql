@@ -6,12 +6,14 @@ create table if not exists public.posts (
   title text not null,
   content text not null default '',
   category text,
+  cover_image text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
--- 기존에 테이블이 있었다면 category 컬럼만 추가
+-- 기존에 테이블이 있었다면 컬럼만 추가
 alter table public.posts add column if not exists category text;
+alter table public.posts add column if not exists cover_image text;
 
 -- 2) updated_at 자동 갱신 트리거
 create or replace function public.set_updated_at()
@@ -47,3 +49,20 @@ create policy "posts public update" on public.posts
 drop policy if exists "posts public delete" on public.posts;
 create policy "posts public delete" on public.posts
   for delete using (true);
+
+-- 4) 이미지 저장용 Storage 버킷(OSS) + 정책
+insert into storage.buckets (id, name, public)
+values ('post-images', 'post-images', true)
+on conflict (id) do nothing;
+
+drop policy if exists "post-images public read" on storage.objects;
+create policy "post-images public read" on storage.objects
+  for select using (bucket_id = 'post-images');
+
+drop policy if exists "post-images public insert" on storage.objects;
+create policy "post-images public insert" on storage.objects
+  for insert with check (bucket_id = 'post-images');
+
+drop policy if exists "post-images public delete" on storage.objects;
+create policy "post-images public delete" on storage.objects
+  for delete using (bucket_id = 'post-images');

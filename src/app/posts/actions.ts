@@ -9,6 +9,7 @@ export async function createPost(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const content = String(formData.get("content") ?? "");
   const category = String(formData.get("category") ?? "").trim() || null;
+  const cover_image = String(formData.get("cover_image") ?? "").trim() || null;
 
   if (!title) {
     throw new Error("제목을 입력하세요.");
@@ -17,7 +18,7 @@ export async function createPost(formData: FormData) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("posts")
-    .insert({ title, content, category })
+    .insert({ title, content, category, cover_image })
     .select("id")
     .single();
 
@@ -34,6 +35,7 @@ export async function updatePost(id: string, formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const content = String(formData.get("content") ?? "");
   const category = String(formData.get("category") ?? "").trim() || null;
+  const cover_image = String(formData.get("cover_image") ?? "").trim() || null;
 
   if (!title) {
     throw new Error("제목을 입력하세요.");
@@ -42,7 +44,7 @@ export async function updatePost(id: string, formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase
     .from("posts")
-    .update({ title, content, category })
+    .update({ title, content, category, cover_image })
     .eq("id", id);
 
   if (error) {
