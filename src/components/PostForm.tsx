@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 import ImageUpload from "@/components/ImageUpload";
-import MarkdownEditor from "@/components/MarkdownEditor";
+import WysiwygEditor from "@/components/WysiwygEditor";
 
 type Props = {
   action: (formData: FormData) => void | Promise<void>;
@@ -62,7 +62,7 @@ export default function PostForm({
 
       <div>
         <label className="mb-1 block text-sm font-medium">내용</label>
-        <MarkdownEditor name="content" defaultValue={defaultValues?.content ?? ""} />
+        <WysiwygEditor name="content" defaultValue={defaultValues?.content ?? ""} />
       </div>
 
       <div className="flex items-center gap-2">

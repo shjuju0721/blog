@@ -9,6 +9,16 @@ function formatDate(iso: string) {
   });
 }
 
+// 목록 미리보기용: HTML 태그/마크다운 기호를 걷어내 순수 텍스트만 표시
+function toPlainText(content: string) {
+  return content
+    .replace(/<[^>]+>/g, " ")
+    .replace(/[#*`~>_]/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export default function PostList({ posts }: { posts: Post[] }) {
   if (posts.length === 0) {
     return (
@@ -55,7 +65,7 @@ export default function PostList({ posts }: { posts: Post[] }) {
                 {post.title}
               </h2>
               <p className="mt-1 line-clamp-2 text-sm text-gray-600">
-                {post.content}
+                {toPlainText(post.content)}
               </p>
             </div>
           </Link>
